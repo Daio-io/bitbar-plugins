@@ -19,7 +19,7 @@ got(itunesAppUrl)
 
         for (let i = 0; i < reviewCount; i++) {
 
-          let review = reviews[i].short + ' ' + reviews[i].stars + '⭐️;';
+          let review = reviews[i].short + ' ' + reviews[i].stars + '⭐️';
 
           console.log(review);
         }
