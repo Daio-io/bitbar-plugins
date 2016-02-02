@@ -3,25 +3,32 @@
 'use strict';
 
 const got = require('/usr/local/lib/node_modules/got');
-const cheerio = require('/usr/local/lib/node_modules/cheerio');
 
-const itunesAppUrl = 'https://itunes.apple.com/gb/app/<PUT_APP_HERE>';
+const itunesAppUrl = 'https://critiq-api.herokuapp.com/ios?appid=APP_ID_HERE';
 
 got(itunesAppUrl)
   .then(response => {
-    let $ = cheerio.load(response.body);
-    let customerReviews = $('.customer-review');
 
-    let reviews = customerReviews.find('.customerReviewTitle').get(0);
-    let starRating = customerReviews.find('.rating').attr('aria-label');
+    const data = JSON.parse(response.body);
 
-    if (reviews) {
-      let stars = starRating ? starRating.replace('stars', '⭐️') : '';
-      console.log(reviews.children[0].data, stars);
-    } else {
-      console.log('No reviews yet |color=red');
+    if (data.status === 'success') {
+
+      let reviews = data.reviews;
+      let reviewCount = reviews.length > 5 ? 5 : reviews.length;
+      if (reviewCount > 0) {
+
+        for (let i = 0; i < reviewCount; i++) {
+
+          let review = reviews[i].short + ' ' + reviews[i].stars + '⭐️;';
+
+          console.log(review);
+        }
+      } else {
+        console.log('No reviews yet |color=red');
+
+      }
     }
-})
-.catch(error => {
-  console.log('Error fetching reviews', error);
-});
+  })
+  .catch(() => {
+    console.log('Error fetching reviews');
+  });
